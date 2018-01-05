@@ -33,12 +33,16 @@
 
         if (error)
             return console.error(error);
-        console.log(root.features);
+        // console.log(root.features);
 
         svg.selectAll("path")
             .data(root.features)
             .enter()
             .append("path")
+            .attr("id", function (d, i) {
+                console.log(d);
+                return d.properties.id ? "g_" + d.properties.id : "";
+            })
             .attr("stroke", "#ffffff")
             .attr("stroke-width", 1)
             .attr("fill", function (d, i) {
@@ -53,7 +57,22 @@
                 d3.select(this)
                     .attr("fill", background_color);
             });
-
+        svg.selectAll("text")
+            .data(root.features)
+            .enter()
+            .append("svg:text")
+            .text(function (d) {
+                return d.properties.name;
+            })
+            .attr("x", function (d) {
+                return path.centroid(d)[0];
+            })
+            .attr("y", function (d) {
+                return path.centroid(d)[1];
+            })
+            .attr("text-anchor", "middle")
+            .attr("font-size", "6pt")
+            .attr("fill","white");
     });
 
 </script>
