@@ -1,0 +1,113 @@
+{
+  "name":"2017",
+  "data":100.0,
+  "children":[
+    {
+      "name":"Q1",
+      "data":28.9,
+      "children":[
+        {
+          "name":"Jan.",
+          "data":73,
+          "children":[
+
+          ]
+        },
+        {
+          "name":"Feb.",
+          "data":56,
+          "children":[
+
+          ]
+        },
+        {
+          "name":"Mar.",
+          "data":98,
+          "children":[
+
+          ]
+        }
+      ]
+    },
+    {
+      "name":"Q2",
+      "data":68.0,
+      "children":[
+        {
+          "name":"Apr.",
+          "data":203,
+          "children":[
+
+          ]
+        },
+        {
+          "name":"May.",
+          "data":301,
+          "children":[
+
+          ]
+        },
+        {
+          "name":"Jun.",
+          "data":90,
+          "children":[
+
+          ]
+        }
+      ]
+    },
+    {
+      "name":"Q3",
+      "data":112.1,
+      "children":[
+        {
+          "name":"Jul.",
+          "data":120,
+          "children":[
+
+          ]
+        },
+        {
+          "name":"Aug.",
+          "data":108,
+          "children":[
+          ]
+        },
+        {
+          "name":"Sep.",
+          "data":21,
+          "children":[
+
+          ]
+        }
+      ]
+    },
+    {
+      "name":"Q4",
+      "data":143.9,
+      "children":[
+        {
+          "name":"Oct.",
+          "data":67,
+          "children":[
+
+          ]
+        },
+        {
+          "name":"Nov.",
+          "data":98,
+          "children":[
+
+          ]
+        },
+        {
+          "name":"Dec.",
+          "data":36,
+          "children":[
+
+          ]
+        }
+      ]
+    }
+  ]
+}

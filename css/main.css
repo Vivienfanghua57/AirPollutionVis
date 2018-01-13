@@ -2,5 +2,9 @@
     clear: left;
     float: left;
     position: relative;
-    left: 25%;
+    left: 15%;
+}
+
+#leaflet_map{
+    height: 800px;
 }

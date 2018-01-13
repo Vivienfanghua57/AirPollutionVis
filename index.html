@@ -11,8 +11,11 @@
 <script src="https://d3js.org/d3.v3.js"></script>
 <script>
     var width = 1000;
-    var height = 1000;
-    var background_color = "#565656"
+    var height = 700;
+    var background_color = "#565656";
+    var graphSize = 75;
+    var radius = (graphSize / 2) - 10;
+
 
     var svg = d3.select("body").append("svg")
         .attr("width", width)
@@ -20,27 +23,75 @@
         .classed("center", true)
         .append("g")
         .attr("transform", "translate(0,0)");
+    var globalLayer=svg.append('g')
+        .attr('id','global_g');
+    var baseLayer=globalLayer.append('g')
+        .attr('id','base_g');
+    var graphLayer=globalLayer.append('g')
+        .attr('id','graph_g');
+
+
+    var zoom = d3.behavior.zoom()
+        .scaleExtent([1, 10])
+        .on("zoom", function () {
+            globalLayer.attr("transform",
+                "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+        });
+
+    var cityCoordList = {
+        'beijing': [116.24, 39.55],
+        'hefei': [117.17, 31.52],
+//        'chongqing': [106.54, 29.59],
+        'fuzhou': [118.18, 25.05],
+        'lanzhou': [104.51, 35.04],
+        'guangzhou': [113.14, 23.08],
+        'nanning': [108.59, 23.04],
+        'guiyang': [106.42, 26.35],
+        'haikou': [110.2, 19.02],
+//        'shijiazhuang': [114.3, 38.02],
+        'zhengzhou': [114.4, 34.46],
+        'harbing': [128.36, 46.44],
+        'wuhan': [112.17, 31.35],
+        'changsha': [111.59, 27.12],
+        'changchun': [125.19, 44.54],
+        'nanchang':[115.89,28.18],
+//        'nanjing': [118.55, 28.4],
+        'shengyang': [123.25, 41.48],
+        'hohhot': [111.41, 42.48],
+        'yinchuan': [106.16, 38.27],
+        'xining': [95.48, 36.38],
+        'jinan': [118.5, 36.4],
+        'taiyuan': [112.33, 37.54],
+        'xian': [108.57, 34.17],
+        'shanghai': [121.79, 31, 14],
+        'chengdu': [104.04, 30.4],
+//        'tianjing': [117.12, 39.02],
+        'lhasa': [91.08, 31.02],
+        'urumqi': [87.36, 43.35],
+        'kunming': [102.1, 25.04],
+//        'hangzhou': [120.1, 30.16]
+    }
 
     var projection = d3.geo.mercator()
         .center([107, 31])
-        .scale(850)
-        .translate([width / 2, height / 2]);
+        .scale(750)
+        .translate([0.5 * width, 0.6 * height]);
 
     var path = d3.geo.path()
         .projection(projection);
+
 
     d3.json("china.geojson", function (error, root) {
 
         if (error)
             return console.error(error);
-        // console.log(root.features);
 
-        svg.selectAll("path")
+        baseLayer.selectAll("path")
             .data(root.features)
             .enter()
             .append("path")
             .attr("id", function (d, i) {
-                console.log(d);
+//                console.log(d);
                 return d.properties.id ? "g_" + d.properties.id : "";
             })
             .attr("stroke", "#ffffff")
@@ -48,16 +99,9 @@
             .attr("fill", function (d, i) {
                 return background_color;
             })
-            .attr("d", path)
-            .on("mouseover", function (d, i) {
-                d3.select(this)
-                    .attr("fill", "yellow");
-            })
-            .on("mouseout", function (d, i) {
-                d3.select(this)
-                    .attr("fill", background_color);
-            });
-        svg.selectAll("text")
+            .call(zoom)
+            .attr("d", path);
+        baseLayer.selectAll("text")
             .data(root.features)
             .enter()
             .append("svg:text")
@@ -72,9 +116,96 @@
             })
             .attr("text-anchor", "middle")
             .attr("font-size", "6pt")
-            .attr("fill","white");
+            .attr("fill", "white");
+
+
     });
 
+    var formatNumber = d3.format(".2f");
+//    var translateCoord = projection([116.3, 39.9]);
+
+    var x = d3.scale.linear()
+        .range([0, 2 * Math.PI]);
+
+    var y = d3.scale.sqrt()
+        .range([0, radius]);
+
+    var color = d3.scale.quantize().domain([500, 1])
+        .range([d3.rgb("#D62F27"), d3.rgb('#E04D36'), d3.rgb('#F59D6E'), d3.rgb('#FFE5A8'), d3.rgb('#D9E0BF'), d3.rgb("#8DA5BA"), d3.rgb("#507CB5")]);
+
+    var partition = d3.layout.partition()
+        .sort(null)
+        .value(function (d) {
+            return 1;
+        });
+
+    var arc = d3.svg.arc()
+        .startAngle(function (d) {
+            return Math.max(0, Math.min(2 * Math.PI, x(d.x)));
+        })
+        .endAngle(function (d) {
+            return Math.max(0, Math.min(2 * Math.PI, x(d.x + d.dx)));
+        })
+        .innerRadius(function (d) {
+            return Math.max(0, y(d.y));
+        })
+        .outerRadius(function (d) {
+            return Math.max(0, y(d.y + d.dy));
+        });
+
+    function insertSunBurstGraph(name, airType) {
+        var translateCoord = projection(cityCoordList[name]);
+        var svgSunBurst = graphLayer
+            .append('g')
+            .attr('id', 'g_' + name)
+            .attr('transform', 'translate(' + translateCoord[0] + ',' + translateCoord[1] + ')');
+        d3.json('/data/json/' + name + ".json", function (error, root) {
+            if (error) throw error;
+            svgSunBurst.selectAll("path")
+                .data(partition.nodes(root))
+                .enter().append("path")
+                .attr("d", arc)
+                .attr("name", function (d) {
+                    return d.name;
+                })
+                .style("fill", function (d) {
+                    return color(d.data[airType]);
+                })
+                .on("click", function (d) {
+                    svgSunBurst.transition()
+                        .duration(750)
+                        .tween("scale", function () {
+                            var xd = d3.interpolate(x.domain(), [d.x, d.x + d.dx]),
+                                yd = d3.interpolate(y.domain(), [d.y, 1]),
+                                yr = d3.interpolate(y.range(), [d.y ? 12 : 0, radius]);
+                            return function (t) {
+                                x.domain(xd(t));
+                                y.domain(yd(t)).range(yr(t));
+                            };
+                        })
+                        .selectAll("path")
+                        .attrTween("d", function (d) {
+                            return function () {
+                                return arc(d);
+                            };
+                        });
+                })
+                .append("title")
+                .text(function (d) {
+                    return d.name + "\nAQI: " + formatNumber(d.data[airType]);
+                });
+        });
+    }
+
+    function insertAllSunBurst() {
+        for (key in cityCoordList) {
+            var city = cityCoordList[key];
+            console.log(city);
+            insertSunBurstGraph(key, 'AQI');
+        }
+    }
+
+    insertAllSunBurst();
 </script>
 
 </body>
