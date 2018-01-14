@@ -102,7 +102,6 @@
             .enter()
             .append("path")
             .attr("id", function (d, i) {
-//                console.log(d);
                 return d.properties.id ? "g_" + d.properties.id : "";
             })
             .attr("stroke", "#ffffff")
@@ -128,8 +127,6 @@
             .attr("text-anchor", "middle")
             .attr("font-size", "6pt")
             .attr("fill", "white");
-
-
     });
 
     var formatNumber = d3.format(".2f");
@@ -222,6 +219,12 @@
         var startLocation = [100, 50];
         var size = 20;
         var maxValue = rangeList[airType][0], minValue = rangeList[airType][1];
+        legendLayer.append('svg:text')
+            .attr('x',startLocation[0]+0.5*size)
+            .attr('y',startLocation[1]-0.5*size)
+            .text(airType)
+            .attr('fill','black')
+            .attr('font-size',"10pt");
         for (var i = 0; i < colorList.length; i++) {
             var color = colorList[i];
             var value = (maxValue - minValue) * (colorList.length - i - 1) / colorList.length + minValue;
@@ -235,13 +238,22 @@
                 .attr('x', startLocation[0] + 1.2 * size)
                 .attr('y', startLocation[1] + (i + 0.8) * size)
                 .text('≥' + d3.format('.2f')(value))
-                .attr('fill',fontColor)
+                .attr('fill',color)
                 .attr("font-size", "10pt");
         }
     }
 
+    function insertTitle() {
+        svg.append('svg:text')
+            .attr('x',320)
+            .attr('y',50)
+            .text('中国空气污染时空分布差异图')
+            .attr('font-size','20pt')
+            .attr('font-weight','bold');
+    }
     insertAllSunBurst('AQI', -1, -1);
     insertLegend('AQI');
+    insertTitle();
 
     $(document).ready(function () {
         $("#select_quarter").change(function () {
