@@ -1,21 +1,32 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>中国地图</title>
+    <title>中国空气质量地图</title>
 </head>
-<style>
 
-</style>
 <body>
+<link href="https://cdn.bootcss.com/bootstrap/4.0.0-beta.3/css/bootstrap.css" rel="stylesheet">
 <link rel="stylesheet" href="css/main.css"/>
 <script src="https://d3js.org/d3.v3.js"></script>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.js"></script>
 <script>
     var width = 1000;
     var height = 700;
-    var background_color = "#565656";
+    var backgroundColor = "#565656";
+    var fontColor="#007bff";
     var graphSize = 75;
     var radius = (graphSize / 2) - 10;
-
+    var colorList = [d3.rgb("#D62F27"), d3.rgb('#E04D36'), d3.rgb('#F59D6E'),
+        d3.rgb('#FFE5A8'), d3.rgb('#D9E0BF'), d3.rgb("#8DA5BA"), d3.rgb("#507CB5")];
+    var rangeList = {
+        'AQI': [500, 1],
+        'PM25': [200, 1],
+        'PM10': [300, 1],
+        'CO': [100, 0],
+        'O3': [500, 1],
+        'SO2': [100, 1],
+        'NO2': [100, 1]
+    };
 
     var svg = d3.select("body").append("svg")
         .attr("width", width)
@@ -23,16 +34,17 @@
         .classed("center", true)
         .append("g")
         .attr("transform", "translate(0,0)");
-    var globalLayer=svg.append('g')
-        .attr('id','global_g');
-    var baseLayer=globalLayer.append('g')
-        .attr('id','base_g');
-    var graphLayer=globalLayer.append('g')
-        .attr('id','graph_g');
-
+    var globalLayer = svg.append('g')
+        .attr('id', 'global_g');
+    var baseLayer = globalLayer.append('g')
+        .attr('id', 'base_g');
+    var graphLayer = globalLayer.append('g')
+        .attr('id', 'graph_g');
+    var legendLayer = svg.append('g')
+        .attr('id', 'legend_g');
 
     var zoom = d3.behavior.zoom()
-        .scaleExtent([1, 10])
+        .scaleExtent([0.4, 10])
         .on("zoom", function () {
             globalLayer.attr("transform",
                 "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
@@ -54,7 +66,7 @@
         'wuhan': [112.17, 31.35],
         'changsha': [111.59, 27.12],
         'changchun': [125.19, 44.54],
-        'nanchang':[115.89,28.18],
+        'nanchang': [115.89, 28.18],
 //        'nanjing': [118.55, 28.4],
         'shengyang': [123.25, 41.48],
         'hohhot': [111.41, 42.48],
@@ -73,13 +85,12 @@
     }
 
     var projection = d3.geo.mercator()
-        .center([107, 31])
-        .scale(750)
+        .center([107, 34])
+        .scale(800)
         .translate([0.5 * width, 0.6 * height]);
 
     var path = d3.geo.path()
         .projection(projection);
-
 
     d3.json("china.geojson", function (error, root) {
 
@@ -97,7 +108,7 @@
             .attr("stroke", "#ffffff")
             .attr("stroke-width", 1)
             .attr("fill", function (d, i) {
-                return background_color;
+                return backgroundColor;
             })
             .call(zoom)
             .attr("d", path);
@@ -122,16 +133,12 @@
     });
 
     var formatNumber = d3.format(".2f");
-//    var translateCoord = projection([116.3, 39.9]);
 
     var x = d3.scale.linear()
         .range([0, 2 * Math.PI]);
 
     var y = d3.scale.sqrt()
         .range([0, radius]);
-
-    var color = d3.scale.quantize().domain([500, 1])
-        .range([d3.rgb("#D62F27"), d3.rgb('#E04D36'), d3.rgb('#F59D6E'), d3.rgb('#FFE5A8'), d3.rgb('#D9E0BF'), d3.rgb("#8DA5BA"), d3.rgb("#507CB5")]);
 
     var partition = d3.layout.partition()
         .sort(null)
@@ -153,7 +160,9 @@
             return Math.max(0, y(d.y + d.dy));
         });
 
-    function insertSunBurstGraph(name, airType) {
+    function insertSunBurstGraph(name, airType, quarter, month) {
+        var color = d3.scale.quantize().domain(rangeList[airType])
+            .range(colorList);
         var translateCoord = projection(cityCoordList[name]);
         var svgSunBurst = graphLayer
             .append('g')
@@ -161,6 +170,10 @@
             .attr('transform', 'translate(' + translateCoord[0] + ',' + translateCoord[1] + ')');
         d3.json('/data/json/' + name + ".json", function (error, root) {
             if (error) throw error;
+            if (!(quarter === undefined || quarter === -1))
+                root = root.children[quarter];
+            if (!(month === undefined || month === -1))
+                root = root.children[month];
             svgSunBurst.selectAll("path")
                 .data(partition.nodes(root))
                 .enter().append("path")
@@ -192,21 +205,105 @@
                 })
                 .append("title")
                 .text(function (d) {
-                    return d.name + "\nAQI: " + formatNumber(d.data[airType]);
+                    return d.name + "\n" + airType + ": " + formatNumber(d.data[airType]);
                 });
         });
     }
 
-    function insertAllSunBurst() {
+    function insertAllSunBurst(type, quarter, month) {
+        graphLayer.innerHTML = "";
         for (key in cityCoordList) {
-            var city = cityCoordList[key];
-            console.log(city);
-            insertSunBurstGraph(key, 'AQI');
+            insertSunBurstGraph(key, type, quarter, month);
         }
     }
 
-    insertAllSunBurst();
-</script>
+    function insertLegend(airType) {
+        $("#legend_g").html("");
+        var startLocation = [100, 50];
+        var size = 20;
+        var maxValue = rangeList[airType][0], minValue = rangeList[airType][1];
+        for (var i = 0; i < colorList.length; i++) {
+            var color = colorList[i];
+            var value = (maxValue - minValue) * (colorList.length - i - 1) / colorList.length + minValue;
+            legendLayer.append('rect')
+                .attr('x', startLocation[0])
+                .attr('y', startLocation[1] + i * size)
+                .attr('width', size)
+                .attr('height', size)
+                .attr('fill', color);
+            legendLayer.append('svg:text')
+                .attr('x', startLocation[0] + 1.2 * size)
+                .attr('y', startLocation[1] + (i + 0.8) * size)
+                .text('≥' + d3.format('.2f')(value))
+                .attr('fill',fontColor)
+                .attr("font-size", "10pt");
+        }
+    }
 
+    insertAllSunBurst('AQI', -1, -1);
+    insertLegend('AQI');
+
+    $(document).ready(function () {
+        $("#select_quarter").change(function () {
+            var type = $("#select_index").val();
+            var quarter = parseInt($("#select_quarter").val());
+            insertAllSunBurst(type, quarter, -1);
+        });
+        $("#select_month").change(function () {
+            var type = $("#select_index").val();
+            var month = parseInt($("#select_month").val());
+            if (month === -1)
+                insertAllSunBurst(type, -1, -1);
+            else {
+                var quarter = Math.floor(month / 3);
+                insertAllSunBurst(type, quarter, month - 3 * quarter);
+            }
+
+
+        });
+        $("#select_index").change(function () {
+            var type = $("#select_index").val();
+            insertAllSunBurst(type, -1, -1);
+            insertLegend(type);
+        });
+    })
+</script>
+<!--<label>中国空气污染地图</label>-->
+<label style="position: relative;top: 5%;">指标: </label>
+<select id="select_index" title="空气污染指标" style="position: relative;top: 5%;">
+    <option>AQI</option>
+    <option>PM25</option>
+    <option>PM10</option>
+    <option>CO</option>
+    <option>O3</option>
+    <option>SO2</option>
+    <option>NO2</option>
+</select>
+<br>
+<label style="position: relative;top: 5%;">季度: </label>
+<select id="select_quarter" title="只显示该季度" style="position: relative;top: 5%;">
+    <option value="-1">All</option>
+    <option value="0">Q1</option>
+    <option value="1">Q2</option>
+    <option value="2">Q3</option>
+    <option value="3">Q4</option>
+</select>
+<br>
+<label style="position: relative;top: 5%;">月份: </label>
+<select id="select_month" title="只显示该月份" style="position: relative;top: 5%;">
+    <option value="-1">All</option>
+    <option value="0">1月</option>
+    <option value="1">2月</option>
+    <option value="2">3月</option>
+    <option value="3">4月</option>
+    <option value="4">5月</option>
+    <option value="5">6月</option>
+    <option value="6">7月</option>
+    <option value="7">8月</option>
+    <option value="8">9月</option>
+    <option value="9">10月</option>
+    <option value="10">11月</option>
+    <option value="11">12月</option>
+</select>
 </body>
 </html>
