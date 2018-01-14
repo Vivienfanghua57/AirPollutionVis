@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1">
+    <title>load</title>
+    <!-- 引入 echarts.js -->
+    <script src="echarts.js"></script>
+    <script src="d3.js"></script>
+</head>
+<body>
+    <div id="main" style="width: 100%; height:800px;"></div>
+    <script type="text/javascript">
+
+        d3.csv("31个城市数据.csv", function (error, data) {
+            if(error){
+                console.log(error);
+            }
+            console.log(data);
+
+            var myChart = echarts.init(document.getElementById('main'));
+
+            // 在下面填内容
+
+            var schema = [
+                {name: 'GDP', index: 0, text: '国内生产总值（亿元）'},
+                {name: 'First', index: 1, text: '第一产业'},
+                {name: 'Second', index: 2, text: '第二产业'},
+                {name: 'Third', index: 3, text: '第三产业'},
+                {name: 'GDPave', index: 4, text: '人均国内生产总值（元）'},
+                {name: 'densityofpopulation', index: 5, text: '人口密度（人/m2）'},
+                {name: 'population', index: 6, text: '城区人口（万人）'},
+                {name: 'area', index: 7, text: '建成区面积（平方公里）'},
+                {name: 'GreenCoverageRate', index: 8, text: '建成区绿化覆盖率（%）'},
+                {name: 'PM2.5', index: 9, text: 'PM2.5年平均浓度 '},
+                {name: 'day', index: 10, text: '空气质量优良天数'}
+            ];
+            var itemStyle = {
+                normal: {
+                    opacity: 0.8,
+                    shadowBlur: 10,
+                    shadowOffsetX: 0,
+                    shadowOffsetY: 0,
+                    shadowColor: 'rgba(0, 0, 0, 0.5)'
+                }
+            };
+
+            option = {
+                backgroundColor: '#404a59',
+                color: [
+                    '#dd4444', '#fec42c', '#80F1BE','#DB7093','#87CEFA','#FFB6C1',
+                    '#FF1493','#DDA0DD','#FF00FF','#BA55D3','#4B0082','#7B68EE',
+                    '#0000FF','#6495ED','#1E90FF','#00BFFF','#5F9EA0','#008080',
+                    '#40E0D0','#3CB371','#98FB98','#228B22','#7FFF00','#F5F5DC',
+                    '#FFFFE0','#BDB76B','#F0E68C','#DAA520','#F5DEB3','#FFEFD5',
+                    '#BC8F8F'
+                ],
+                legend: {
+                    y: 'bottom',
+                    data: ['北京','天津','石家庄','太原','呼和浩特',
+                        '沈阳','长春','哈尔滨','上海','南京','杭州','杭州',
+                        '合肥','福州','南昌','济南','郑州','武汉','长沙',
+                        '广州','南宁','海口','重庆','成都','贵阳','昆明',
+                        '拉萨','西安','兰州','西宁','银川','乌鲁木齐'],
+                    textStyle: {
+                        color: '#fff',
+                        fontSize: 16
+                    }
+                },
+                grid: {
+                    x: '10%',
+                    x2: 150,
+                    y: '18%',
+                    y2: '10%'
+                },
+                tooltip: {
+                    padding: 10,
+                    backgroundColor: '#222',
+                    borderColor: '#777',
+                    borderWidth: 1,
+                    formatter: function (obj) {
+                        var value = obj.value;
+                        return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                            + obj.seriesName
+                            + '</div>'
+                            + schema[1].text + '：' + value[1] + '<br>'
+                            + schema[2].text + '：' + value[2] + '<br>'
+                            + schema[3].text + '：' + value[3] + '<br>'
+                            + schema[4].text + '：' + value[4] + '<br>'
+                            + schema[5].text + '：' + value[5] + '<br>'
+                            + schema[6].text + '：' + value[6] + '<br>';
+                    }
+                },
+                xAxis: {
+                    type: 'value',
+                    name: '国内生产总值(亿元)',
+                    nameGap: 16,
+                    nameTextStyle: {
+                        color: '#fff',
+                        fontSize: 14
+                    },
+                    max: 30000,
+                    splitLine: {
+                        show: true
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    name: 'AQI指数',
+                    nameLocation: 'end',
+                    nameGap: 20,
+                    nameTextStyle: {
+                        color: '#fff',
+                        fontSize: 16
+                    },
+                    axisLine: {
+                        lineStyle: {
+                            color: '#eee'
+                        }
+                    },
+                    splitLine: {
+                        show: false
+                    }
+                },
+                visualMap: [
+                    {
+                        left: 'right',
+                        top: '10%',
+                        dimension: 9,
+                        min: 0,
+                        max: 250,
+                        itemWidth: 30,
+                        itemHeight: 120,
+                        calculable: true,
+                        precision: 0.1,
+                        text: ['圆形大小：PM2.5年平均浓度'],
+                        textGap: 30,
+                        textStyle: {
+                            color: '#fff'
+                        },
+                        inRange: {
+                            symbolSize: [10, 70]
+                        },
+                        outOfRange: {
+                            symbolSize: [10, 70],
+                            color: ['rgba(255,255,255,.2)']
+                        },
+                        controller: {
+                            inRange: {
+                                color: ['#c23531']
+                            },
+                            outOfRange: {
+                                color: ['#444']
+                            }
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        type: 'scatter',
+                        itemStyle: itemStyle,
+                        data: data
+                    }
+                ]
+            };
+
+
+
+
+            // 在上面填内容
+
+            myChart.setOption(option);
+        });
+
+    </script>
+</body>
+</html>
