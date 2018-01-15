@@ -3,18 +3,14 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1">
-    <title>2016-2017省会城市天气质量红榜</title>
-    <!-- 引入 echarts.js -->
+    <title>2016-2017省会城市空气质量红榜</title>
     <script src="echarts.js"></script>
-    <!-- <script src="jquery-3.2.1.min.js"></script> -->
     <script src="china.js"></script>
     <script src="d3.js"></script>
 </head>
 <body>
-    <div id="main" style="width: 100%; height:620px;"></div>
+    <div id="main" style="width: 100%; height: 620px;"></div>
     <script type="text/javascript">
-        // $.get('./china.json', function (chinaJson) {
-        //     echarts.registerMap('china', chinaJson);
         d3.json("data.json", function(error, data) {
             if (error)
                 throw error;
@@ -140,7 +136,7 @@
             var convertData = function(data) {
                 var res = [];
                 for (var i = 0; i < data.length; i++) {
-                    tmp = []
+                    tmp = [];
                     for (var j = 0; j < data[i].data.length; j++) {
                         var geoCoord = geoCoordMap[data[i].data[j].name];
                         if (geoCoord) {
@@ -151,7 +147,7 @@
                         }
                     }
                     res.push({
-                        name: data[i].time,
+                        time: data[i].time,
                         data: tmp
                     });
                 }
@@ -165,7 +161,7 @@
                     animationDurationUpdate: 1000,  // 数据更新动画的时长
                     animationEasingUpdate: 'quinticInOut',
                     timeline: {
-                        axisType: 'category',  // TODO: change to 'time'
+                        axisType: 'category',
                         orient: 'vertical',
                         autoPlay: true,
                         inverse: true,
@@ -185,15 +181,15 @@
                             },
                             emphasis: {
                                 textStyle: {
-                                    color: '#fff'  // 时间轴上文字的颜色
+                                    color: '#fff'
                                 }
                             }
                         },
-                        symbol: 'none',  // 可改timeline标记的形状
+                        symbol: 'none',
                         lineStyle: {
-                            color: '#555'  // timeline线色
+                            color: '#555'
                         },
-                        checkpointStyle: {  // timeline上当前项那个圆圈属性
+                        checkpointStyle: {
                             color: '#bbb',
                             borderColor: '#777',
                             borderWidth: 1
@@ -210,13 +206,13 @@
                                 borderColor: '#aaa'
                             }
                         },
-                        data: data.map(function(ele) {
+                        data: convertedData.map(function(ele) {
                             return ele.time
                         })
                     },
                     backgroundColor: '#404a59',
                     title: {
-                        text: '2016-2017省会城市天气质量红榜',
+                        text: '2016-2017省会城市空气质量红榜',
                         subtext: 'AQI <= 50 天数',
                         left: 'center',
                         top: 5,
@@ -233,7 +229,7 @@
                             }
                         }
                     },
-                    grid: {  // 柱状图的位置
+                    grid: {
                         left: 10,
                         right: '45%',
                         top: '70%',
@@ -290,14 +286,13 @@
                 options: []
             };
 
-            for (var i = 0; i < data.length; i++) {
+            for (var i = 0; i < convertedData.length; i++) {
 
                 option.options.push({
                     visualMap: [{
-                        //type:'continous',
-                        //type: 'continuous',
                         calculable: true,
                         dimension: 0,
+                        seriesIndex: 0,
                         left: 10,
                         top: 'center',
                         itemWidth: 12,
@@ -308,7 +303,22 @@
                             color: '#ddd'
                         },
                         inRange: {
-            //                color: ['lightskyblue', 'yellow', 'orangered', 'red']
+                            color: ['#dcffa8', '#a8ffbb', '#6cf7df', '#6cc2f7', '#279ce5']
+                        }
+                    }, {
+                        calculable: true,
+                        dimension: 2,
+                        seriesIndex: 1,
+                        left: 10,
+                        top: 'center',
+                        itemWidth: 12,
+                        min: 0,
+                        max: 31,
+                        text: ['多', '少'],
+                        textStyle: {
+                            color: '#ddd'
+                        },
+                        inRange: {
                             color: ['#dcffa8', '#a8ffbb', '#6cf7df', '#6cc2f7', '#279ce5']
                         }
                     }],
@@ -318,7 +328,7 @@
                         min: 0,
                         max: 31,
                         axisLabel: {
-                            show: false,
+                            show: false
                         },
                         splitLine: {
                             show: false
@@ -334,8 +344,8 @@
                             }
                         },
                         show: false,
-                        data: data[i].data.map(function(ele) {
-                            return ele.value[1]
+                        data: convertedData[i].data.map(function(ele) {
+                            return ele.value[3]
                         }).reverse()
                     },
                     series: [{
@@ -346,8 +356,8 @@
                                 formatter: '{b} : {c}'
                             }
                         },
-                        data: data[i].data.map(function(ele) {
-                            return ele.value[0]
+                        data: convertedData[i].data.map(function(ele) {
+                            return ele.value[2]
                         }).sort(function(a, b) {
                             return a > b
                         })
@@ -365,11 +375,7 @@
                                 }
                             },
                             emphasis: {
-                                show: true,
-                                // position: 'right',
-                                // formatter: function(params) {
-                                //     return params.value[3] + "：" + params.value[2] + "天"
-                                // },
+                                show: true
                             }
                         },
                         symbolSize: function (val) {
