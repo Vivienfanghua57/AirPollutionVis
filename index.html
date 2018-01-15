@@ -165,7 +165,7 @@
             .append('g')
             .attr('id', 'g_' + name)
             .attr('transform', 'translate(' + translateCoord[0] + ',' + translateCoord[1] + ')');
-        d3.json('/airpollutionvis/data/json/' + name + ".json", function (error, root) {
+        d3.json('/AirPollutionVis/data/json/' + name + ".json", function (error, root) {
             if (error) throw error;
             if (!(quarter === undefined || quarter === -1))
                 root = root.children[quarter];
