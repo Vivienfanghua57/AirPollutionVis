@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1">
+    <title>load</title>
+    <!-- 引入 echarts.js -->
+    <script src="echarts.js"></script>
+    <script src="d3.js"></script>
+</head>
+<body>
+<div id="main" style="width: 100%; height:700px;"></div>
+<script type="text/javascript">
+
+    d3.csv("31个城市数据.csv", function (error, data) {
+        if(error){
+            console.log(error);
+        }
+        console.log(data);
+
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 在下面填内容
+
+        var dataBJ = [
+            [114600,198,25669.13,129.79,4944.44,20594.9,1145,1879.6,1419.66,48.4,73,80.23216993]
+        ];
+
+        var dataTJ= [
+            [115600,226,17885.39,220.22,7571.35,10093.82,3639,719.2,1007.91,37.22,69,56.43611909]
+        ];
+
+        var dataSJZ = [
+            [55800,172,5927.73,480.88,2693.92,2752.93,5467,264.1,283.72,44.53,99,46.4415552]
+        ];
+
+        var dataTY = [
+            [70400,232,2955.6,38.77,1067.49,1849.34,3680,310,340,40.85,66,62.57071322]
+        ];
+
+        var dataHHHT = [
+            [109100,283,3173.59,113.49,884.43,2175.67,7339,131.63,260,38.3,41,68.55548448]
+        ];
+
+        var dataSY = [
+            [81000,249,5460.01,266.36,2135.63,3058.02,1501,470.84,588.26,36.03,54,56.00758973]
+        ];
+
+        var dataCC = [
+            [77200,291,5917.94,323.53,2915.66,2678.74,1921,307.63,519.04,38.53,46,45.26473739]
+        ];
+
+        var dataHRB = [
+            [57400,282,6101.61,691.18,1896.66,3513.77,10416,421.95,435.28,33.6,52,57.58758754]
+        ];
+
+        var dataSH = [
+            [113700,276,28178.65,109.47,8406.28,19662.9,3816,2419.7,998.75,38.6,45,69.7794252]
+        ];
+
+        var dataNJ = [
+            [127500,242,10503.02,252.54,4117.32,6133.16,1484,590.6,773.79,44.75,48,58.39425232]
+        ];
+
+        var dataHZ = [
+            [122500,260,11313.72,304.21,4120.93,6888.59,3791,339.82,541.38,40.7,49,60.88704688]
+        ];
+
+        var dataHF = [
+            [80500,253,6274.38,270.17,3181.24,2822.97,3553,211.04,460,41.78,57,44.99201515]
+        ];
+
+        var dataFZ = [
+            [82600,361,6197.64,492.25,2590.43,3114.96,2390,194.69,265.33,43.87,27,50.26042171]
+        ];
+
+        var dataNC = [
+            [86400,318,4354.99,181.77,2307.24,1865.98,7639,243.74,317.3,40.84,43,42.8469411]
+        ];
+
+        var dataJN = [
+            [91600,168,6536.12,317.31,2368.9,3849.91,2127,329.24,447.69,40.31,76,58.90207034]
+        ];
+
+        var dataZZ = [
+            [83500,159,8025.31,156.35,3728.66,4140.29,14073,344.93,422.35,43.64,78,51.59040585]
+        ];
+
+        var dataWH = [
+            [112300,237,11912.61,390.62,5227.05,6294.94,4861,473.48,585.61,39.65,57,52.84266]
+        ];
+
+        var dataCS = [
+            [125500,266,9455.36,370.95,4521.02,4563.4,2930,351.51,322.73,40.06,53,48.26257276]
+        ];
+
+        var dataGZ = [
+            [145300,310,19547.44,239.28,5751.59,13556.57,6355,626.6,1249.11,41.8,36,69.35215046]
+        ];
+
+        var dataNN = [
+            [55600,348,3703.39,400.67,1427.16,1875.57,3637,224.7,310.47,42.12,36,50.6446796]
+        ];
+
+        var dataHK = [
+            [59100,361,1257.67,63.91,233.56,960.2,2709,110,140.59,40.29,21,76.34753155]
+        ];
+
+        var dataCQ = [
+            [58200,289,17740.59,1303.24,7898.92,8538.43,1953,1102.7,1350.66,40.76,54,48.12934632]
+        ];
+
+        var dataCD = [
+            [83000,214,12170.23,474.94,5232.02,6463.27,5780,617.35,837.27,41.39,63,53.10721326]
+        ];
+
+        var dataGY= [
+            [73100,350,3157.7,137.14,1218.79,1801.77,2171,202,299,40.74,37,57.05956867]
+        ];
+
+        var dataKM = [
+            [66900,362,4300.08,200.51,1660.11,2439.46,2208,391.92,435.81,41.88,28,56.73057245]
+        ];
+
+        var dataLS = [
+            [75200,313,424.95,15.12,162.8,247.03,2397,48.71,82.82,39.59,28,58.13154489]
+        ];
+
+        var dataXA = [
+            [71900,192,6257.18,232.01,2197.81,3827.36,8045,436.03,517.74,43.15,71,61.16749079]
+        ];
+
+        var dataLZ = [
+            [62600,243,2264.23,60.36,790.1,1413.78,7377,188.78,321.75,27.39,54,62.43976981]
+        ];
+
+        var dataXN = [
+            [54300,271,1248.17,39.15,595.64,613.37,3442,122.45,92,40.57,49,49.14154322]
+        ];
+
+        var dataYC = [
+            [74900,252,1617.71,58.61,825.61,733.48,856,110.62,170.7,41.51,56,45.34063584]
+        ];
+
+        var dataWLMQ = [
+            [85600,246,2458.98,28.14,704.08,1726.76,2043,262.14,436,40.9,74,70.22261263]
+        ];
+
+        var schema = [
+            {name: 'GDPave', index: 0, text: '人均GDP（元）'},
+            {name: 'day', index: 1, text: '空气质量优良天数'},
+            {name: 'GDP', index: 2, text: '城市生产总值（亿元）'},
+            {name: 'First', index: 3, text: '第一产业'},
+            {name: 'Second', index: 4, text: '第二产业'},
+            {name: 'Third', index: 5, text: '第三产业'},
+            {name: 'densityofpopulation', index: 6, text: '人口密度（人/km2）'},
+            {name: 'population', index: 7, text: '城区人口（万人）'},
+            {name: 'area', index: 8, text: '建成区面积（平方公里）'},
+            {name: 'GreenCoverageRate', index: 9, text: '建成区绿化覆盖率（%）'},
+            {name: 'PM2.5', index: 10, text: 'PM2.5年平均浓度 '},
+            {name: 'Third%', index: 11, text: '第三产业比重(%) '}
+
+        ];
+
+
+        var itemStyle = {
+            normal: {
+                opacity: 0.8,
+                shadowBlur: 10,
+                shadowOffsetX: 0,
+                shadowOffsetY: 0,
+                shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+        };
+
+        option = {
+            backgroundColor: '#404a59',
+            color: [
+                'rgb(147,112,219)'
+            ],
+            title: [{
+                text: '人均GDP与空气质量关系图',
+                left: 'center',
+                top: 10,
+                textStyle: {
+                    color: '#fff',
+                    fontWeight: 'normal',
+                    fontSize: 20
+                }
+            }],
+            legend: {
+                y: 'bottom',
+                data: ['北京','天津','石家庄','太原','呼和浩特','沈阳',
+                    '长春','哈尔滨','上海','南京','杭州','合肥',
+                    '福州','南昌','济南','郑州','武汉','长沙',
+                    '广州','南宁','海口','重庆','成都','贵阳',
+                    '昆明','拉萨','西安','兰州','西宁','银川',
+                    '乌鲁木齐'],
+                textStyle: {
+                    color: '#fff',
+                    fontSize: 16
+                }
+            },
+            grid: {
+                x: '10%',
+                x2: 200,
+                y: '10%',
+                y2: '15%',
+            },
+            tooltip: {
+                padding: 10,
+                backgroundColor: '#222',
+                borderColor: '#777',
+                borderWidth: 1,
+                formatter: function (obj) {
+                    var value = obj.value;
+                    return '<div style="border-bottom: 1px solid rgba(255,255,255,.3); font-size: 18px;padding-bottom: 7px;margin-bottom: 7px">'
+                        + obj.seriesName
+                        + '</div>'
+                        + schema[0].text + '：' + value[0] + '<br>'
+                        + schema[1].text + '：' + value[1] + '<br>'
+                        + schema[2].text + '：' + value[2] + '<br>'
+                        + schema[3].text + '：' + value[3] + '<br>'
+                        + schema[4].text + '：' + value[4] + '<br>'
+                        + schema[5].text + '：' + value[5] + '<br>'
+                        + schema[6].text + '：' + value[6] + '<br>'
+                        + schema[7].text + '：' + value[7] + '<br>'
+                        + schema[8].text + '：' + value[8] + '<br>'
+                        + schema[9].text + '：' + value[9] + '<br>'
+                        + schema[10].text + '：' + value[10] + '<br>'
+                        + schema[11].text + '：' + value[11] + '<br>';
+
+                }
+            },
+            xAxis: {
+                type: 'value',
+                name: '人均GDP(元)',
+                nameGap: 16,
+                nameTextStyle: {
+                    color: '#fff',
+                    fontSize: 14
+                },
+                min: 50000,
+                max: 150000,
+                splitLine: {
+                    show: true
+                },
+                axisLine: {
+                    lineStyle: {
+                        color: '#eee'
+                    }
+                }
+            },
+            yAxis: {
+                type: 'value',
+                name: '空气质量优良天数',
+                nameLocation: 'end',
+                //nameRotate: 90,
+                nameGap: 20,
+                nameTextStyle: {
+                    color: '#fff',
+                    fontSize: 16
+                },
+                min: 100,
+                axisLine: {
+                    lineStyle: {
+                        color: '#eee'
+                    }
+                },
+                splitLine: {
+                    show: true
+                }
+            },
+            visualMap: [
+                {
+                    left: 'right',
+                    top: '10%',
+                    dimension: 10,
+                    min: 0,
+                    max: 100,
+                    itemWidth: 30,
+                    itemHeight: 120,
+                    calculable: true,
+                    precision: 0.1,
+                    text: ['圆形大小：PM2.5年平均浓度'],
+                    textGap: 30,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    inRange: {
+                        symbolSize: [10, 80]
+                    },
+                    outOfRange: {
+                        symbolSize: [10, 70],
+                        color: ['rgba(255,255,255,.2)']
+                    },
+                    controller: {
+                        inRange: {
+                            color: ['#c23531']
+                        },
+                        outOfRange: {
+                            color: ['#444']
+                        }
+                    }
+                },
+                {
+                    left: 'right',
+                    bottom: '25%',
+                    dimension: 11,
+                    min: 40 ,
+                    max: 100,
+                    itemHeight: 120,
+                    calculable: true,
+                    precision: 0.01,
+                    text: ['明暗：第三产业比重%'],
+                    textGap: 30,
+                    textStyle: {
+                        color: '#fff'
+                    },
+                    inRange: {
+                        colorLightness: [1, 0.5]
+                    },
+                    outOfRange: {
+                        color: ['rgba(255,255,255,.2)']
+                    },
+                    controller: {
+                        inRange: {
+                            color: ['#c23531']
+                        },
+                        outOfRange: {
+                            color: ['#444']
+                        }
+                    }
+                }
+            ],
+            series: [
+                {
+                    name: '北京',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataBJ
+                },
+                {
+                    name: '天津',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataTJ
+                },
+                {
+                    name: '石家庄',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataSJZ
+                },
+                {
+                    name: '太原',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataTY
+                },
+                {
+                    name: '呼和浩特',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataHHHT
+                },
+                {
+                    name: '沈阳',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataSY
+                },
+                {
+                    name: '长春',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataCC
+                },
+                {
+                    name: '哈尔滨',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataHRB
+                },
+                {
+                    name: '上海',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataSH
+                },
+                {
+                    name: '南京',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataNJ
+                },
+                {
+                    name: '杭州',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataHZ
+                },
+                {
+                    name: '合肥',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataHF
+                },
+                {
+                    name: '福州',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataFZ
+                },
+                {
+                    name: '南昌',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataNC
+                },
+                {
+                    name: '济南',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataJN
+                },
+                {
+                    name: '郑州',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataZZ
+                },
+                {
+                    name: '武汉',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataWH
+                },
+                {
+                    name: '长沙',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataCS
+                },
+                {
+                    name: '广州',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataGZ
+                },
+                {
+                    name: '南宁',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataNN
+                },
+                {
+                    name: '海口',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataHK
+                },
+                {
+                    name: '重庆',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataCQ
+                },
+                {
+                    name: '成都',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataCD
+                },
+                {
+                    name: '贵阳',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataGY
+                },
+                {
+                    name: '昆明',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataKM
+                },
+                {
+                    name: '拉萨',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataLS
+                },
+                {
+                    name: '西安',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataXA
+                },
+                {
+                    name: '兰州',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataLZ
+                },
+                {
+                    name: '西宁',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataXN
+                },
+                {
+                    name: '银川',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataYC
+                },
+                {
+                    name: '乌鲁木齐',
+                    type: 'scatter',
+                    itemStyle: itemStyle,
+                    data: dataWLMQ
+                }
+            ]
+        };
+        // 在上面填内容
+
+        myChart.setOption(option);
+    });
+
+</script>
+</body>
+</html>
